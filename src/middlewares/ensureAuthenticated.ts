@@ -13,10 +13,17 @@ export function ensureAuthenticated(request: Request, response: Response, next: 
     const [, token] = authHeader.split(" ")
 
     try {
-        const {sub: user_register } = verify(token, authConfig.jwt.secret)
+        const decoded = verify(token, authConfig.jwt.secret)
+
+        if (typeof decoded === "string") {
+            throw new AppError("JWT Token inválido")
+        }
+
+        const { role, sub: user_register } = decoded
 
         request.user = {
-            register: Number(user_register)
+            register: Number(user_register),
+            role
         }
 
         return next()

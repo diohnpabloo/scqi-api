@@ -29,12 +29,12 @@ export class SessionController {
             }
 
             const { secret, expiresIn } = authConfig.jwt
-            const token = sign({}, secret, {
+            const token = sign({ role: user.role }, secret, {
                 subject: String(user.register),
                 expiresIn
             })
 
-             response.json({ user, token })
+            response.json({ user, token })
         } catch (error) {
             next(error)
         }
