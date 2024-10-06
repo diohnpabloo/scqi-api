@@ -41,7 +41,12 @@ export class OffenderController {
 
     async find(request: Request, response: Response, next: NextFunction) {
         try {
-            const { cpf, name, surname, mother_name, date_of_birth } = request.query;
+            const { cpf, name, surname, mother_name, date_of_birth } = request.query
+
+            if (!cpf && !name && !surname && !mother_name && !date_of_birth) {
+                throw new AppError("Nenhum campo de busca informado.")
+            }
+
             const query = knex("offenders")
 
             if (typeof cpf === 'string') {
@@ -70,7 +75,7 @@ export class OffenderController {
             }
             const offenders = await query.first()
 
-            if (!offenders) {
+            if (!offenders || offenders.length === 0) {
                 throw new AppError("Nenhum infrator encontrado.")
             }
 
