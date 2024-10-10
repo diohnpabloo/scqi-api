@@ -58,7 +58,19 @@ export class UserController {
                 throw new AppError("Usuário não encontrado.")
             }
 
-            await knex('users').where({ register }).update({ is_paid })
+            const data = new Date()
+
+            if (is_paid) {
+                data.setDate(data.getDate() + 30)
+            }
+
+            await knex('users')
+                .where({ register })
+                .update({
+                    is_paid,
+                    payment_due_date: is_paid ? data : null,
+                    updated_at: knex.fn.now()
+                })
 
             response.json()
         } catch (error) {
