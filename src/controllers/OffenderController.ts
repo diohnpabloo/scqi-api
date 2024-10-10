@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { knex } from "@/database/knex";
+import { knex } from "../../database/knex";
 import { DiskStorage } from "@/providers/DiskStorage";
 import { AppError } from "@/utils/AppError";
 

@@ -1,6 +1,6 @@
 import { compare } from "bcryptjs"
 import { Request, Response, NextFunction } from "express"
-import { knex } from "@/database/knex"
+import { knex } from "../../database/knex"
 import { AppError } from "@/utils/AppError"
 import z from "zod"
 import authConfig from "@/configs/auth"

@@ -1,5 +1,5 @@
 import { hash } from "bcryptjs"
-import { knex } from "@/database/knex"
+import { knex } from "../../database/knex"
 import { AppError } from "@/utils/AppError"
 import { Request, Response, NextFunction } from "express"
 import z from "zod"
@@ -10,7 +10,7 @@ export class UserController {
         try {
             const users = await knex("users").select()
 
-             response.json(users)
+            response.json(users)
         } catch (error) {
             next(error)
         }
@@ -19,10 +19,10 @@ export class UserController {
     async create(request: Request, response: Response, next: NextFunction) {
         try {
             const bodySchema = z.object({
-                register: z.string({message: "A matrícula deve contar 8 dígitos."}).min(8),
+                register: z.string({ message: "A matrícula deve contar 8 dígitos." }).min(8),
                 name: z.string(),
                 password: z.string(),
-                email: z.string().email({message: "Informe um e-email válido."})
+                email: z.string().email({ message: "Informe um e-email válido." })
             })
 
             const { register, name, password, email } = bodySchema.parse(request.body)
@@ -37,7 +37,7 @@ export class UserController {
 
             await knex<UsersRepository>("users").insert({ register, name, password: hashedPassword, email })
 
-             response.status(201).json()
+            response.status(201).json()
         } catch (error) {
             next(error)
         }
@@ -45,7 +45,25 @@ export class UserController {
 
     async update(request: Request, response: Response, next: NextFunction) {
         try {
-            response.json({message: "Aqui"})
+            const updateSchema = z.object({
+                register: z.string(),
+                is_paid: z.boolean()
+            })
+
+            const { register, is_paid } = updateSchema.parse({
+                ...request.params,
+                ...request.body
+            })
+
+            const user = await knex('users').where({ register }).first()
+
+            if (!user) {
+                throw new AppError("Usuário não encontrado.")
+            }
+
+            await knex('users').where({ register }).update({ is_paid })
+
+            response.json({ message: "Status de pagamento atualizado com sucesso" })
         } catch (error) {
             next(error)
         }

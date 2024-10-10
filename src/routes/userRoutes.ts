@@ -11,5 +11,5 @@ userRoutes.use(verifyUserAuthorization("admin"))
 
 userRoutes.get("/", userController.index)
 userRoutes.post("/", userController.create)
-userRoutes.patch("/", userController.update)
+userRoutes.patch("/:register", userController.update)
 
