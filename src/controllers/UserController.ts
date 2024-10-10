@@ -45,15 +45,12 @@ export class UserController {
 
     async update(request: Request, response: Response, next: NextFunction) {
         try {
-            const updateSchema = z.object({
+            const bodySchema = z.object({
                 register: z.string(),
                 is_paid: z.boolean()
             })
 
-            const { register, is_paid } = updateSchema.parse({
-                ...request.params,
-                ...request.body
-            })
+            const { register, is_paid } = bodySchema.parse(request.body)
 
             const user = await knex('users').where({ register }).first()
 
@@ -63,7 +60,7 @@ export class UserController {
 
             await knex('users').where({ register }).update({ is_paid })
 
-            response.json({ message: "Status de pagamento atualizado com sucesso" })
+            response.json()
         } catch (error) {
             next(error)
         }
