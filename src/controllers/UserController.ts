@@ -1,5 +1,5 @@
 import { hash } from "bcryptjs"
-import { knex } from "../../database/knex"
+import { knex } from "../database/knex"
 import { AppError } from "@/utils/AppError"
 import { Request, Response, NextFunction } from "express"
 import z from "zod"

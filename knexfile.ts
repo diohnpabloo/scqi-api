@@ -1,22 +1,16 @@
-export default  {
-    client: "sqlite3",
-    connection: {
-      filename: "./database/database.db",
-    },
-    pool: {
-      afterCreate: (connection: any, done: any) => {
-        connection.run("PRAGMA foreign_keys = ON");
-        done();
-      },
-    },
-    useNullAsDefault: true,
-    migrations: {
-      extensions: "ts",
-      directory: "./database/migrations",
-    },
-    seeds: {
-      extensions: "ts",
-      directory: "./database/seeds",
-    },
-  };
-  
+import { env } from "@/env";
+
+export default {
+  client: env.DATABASE_CLIENT,
+  connection: {
+    connectionString: env.DATABASE_URL,
+  },
+  migrations: {
+    extensions: "ts",
+    directory: "./database/migrations",
+  },
+  seeds: {
+    extensions: "ts",
+    directory: "./database/seeds",
+  },
+};
