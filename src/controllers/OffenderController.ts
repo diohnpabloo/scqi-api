@@ -1,23 +1,38 @@
 import { Request, Response, NextFunction } from "express";
 import { knex } from "../database/knex";
 import { DiskStorage } from "@/providers/DiskStorage";
+import { S3Storage } from "@/providers/S3Storage"
 import { AppError } from "@/utils/AppError";
+import moment from 'moment'
+
 
 export class OffenderController {
     async create(request: Request, response: Response, next: NextFunction) {
         const diskstorage = new DiskStorage()
+        const s3Storage = new S3Storage()
+
+        const file = request.file
+
+        if (!file) {
+            return next(new AppError('Imagem não enviada para cadastro.'));
+        }
+        const originalName = file.originalname
 
         try {
-
             let { cpf, name, surname, mother_name, date_of_birth } = request.body
-            const avatarFileName = request.file?.filename
-            const filename = avatarFileName ? await diskstorage.saveFile(avatarFileName) : null
 
             const offenders = await knex("offenders").where({ cpf }).first()
-
             if (offenders) {
                 throw new AppError("Infrator já cadastrado na base de dados.")
             }
+
+            if (date_of_birth) {
+                date_of_birth = moment(date_of_birth, "DD/MM/YYYY").format("yyyy-MM-DD")
+            }
+
+
+
+            const avatarKey = await s3Storage.uploadFile(file.filename, originalName)
 
             await knex("offenders").insert({
                 cpf,
@@ -25,15 +40,17 @@ export class OffenderController {
                 surname,
                 mother_name,
                 date_of_birth,
-                avatar: filename
+                avatar: avatarKey
             })
+
+
+
+            await diskstorage.deleteFile(file.filename)
 
             response.status(201).json()
         } catch (error) {
-            const filename = request.file?.filename
-
-            if (filename) {
-                await diskstorage.deleteFile(filename)
+            if (file && file.filename) {
+                await diskstorage.deleteFile(file.filename)
             }
             next(error)
         }

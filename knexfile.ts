@@ -1,4 +1,4 @@
-import { env } from "@/env";
+import { env } from "./src/env";
 
 export default {
   client: env.DATABASE_CLIENT,
@@ -7,10 +7,10 @@ export default {
   },
   migrations: {
     extensions: "ts",
-    directory: "./database/migrations",
+    directory: "./src/database/migrations",
   },
   seeds: {
     extensions: "ts",
-    directory: "./database/seeds",
+    directory: "./src/database/seeds",
   },
 };
