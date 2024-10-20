@@ -11,6 +11,11 @@ const envSchema = z.object({
     CLOUD_SECRET_ACESS_KEY: z.string(),
     CLOUD_BUCKET_REGION: z.string(),
     STORAGE_TYPE: z.string(),
+    ADMIN_USER_CREATED: z.string(),
+    ADMIN_USER_REGISTER: z.string(),
+    ADMIN_USER_NAME: z.string(),
+    ADMIN_USER_PASSWORD: z.string(),
+    ADMIN_USER_EMAIL: z.string()
 })
 
 const _env = envSchema.safeParse(process.env)

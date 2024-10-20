@@ -19,31 +19,34 @@ export class OffenderController {
         const originalName = file.originalname
 
         try {
-            let { cpf, name, surname, mother_name, date_of_birth } = request.body
-
-            const offenders = await knex("offenders").where({ cpf }).first()
-            if (offenders) {
-                throw new AppError("Infrator já cadastrado na base de dados.")
+            let { cpf, name, surname, mother_name, date_of_birth, address } = request.body
+            if (cpf === '') {
+                cpf = null
+            }
+            if (cpf && cpf !== null) {
+                const offenders = await knex("offenders").where({ cpf }).first()
+                if (offenders) {
+                    throw new AppError("Infrator já cadastrado na base de dados.")
+                }
             }
 
             if (date_of_birth) {
                 date_of_birth = moment(date_of_birth, "DD/MM/YYYY").format("yyyy-MM-DD")
             }
 
-
-
             const avatarKey = await s3Storage.uploadFile(file.filename, originalName)
 
-            await knex("offenders").insert({
+            const offenderData = {
                 cpf,
                 name,
                 surname,
                 mother_name,
-                date_of_birth,
-                avatar: avatarKey
-            })
+                address,
+                date_of_birth: date_of_birth === "Não cadastrado" ? null : date_of_birth,
+                avatar: avatarKey,
+            };
 
-
+            await knex("offenders").insert(offenderData)
 
             await diskstorage.deleteFile(file.filename)
 
@@ -57,13 +60,12 @@ export class OffenderController {
     }
 
     async find(request: Request, response: Response, next: NextFunction) {
+        const { cpf, name, surname, mother_name, date_of_birth } = request.query;
+
+        if (!cpf && !name && !surname && !mother_name && !date_of_birth) {
+            return next(new AppError("Nenhum campo de busca informado."));
+        }
         try {
-            const { cpf, name, surname, mother_name, date_of_birth } = request.query
-
-            if (!cpf && !name && !surname && !mother_name && !date_of_birth) {
-                throw new AppError("Nenhum campo de busca informado.")
-            }
-
             const query = knex("offenders")
 
             if (typeof cpf === 'string') {
@@ -71,34 +73,43 @@ export class OffenderController {
             }
 
             if (typeof name === 'string') {
-                query.andWhere('name', 'like', `%${name.toLowerCase()}%`);
+                query.orWhereRaw('LOWER(name) LIKE ?', [`%${name.toLowerCase()}%`]);
             }
 
             if (typeof surname === 'string') {
-                query.andWhere('surname', 'like', `%${surname.toLowerCase()}%`);
+                query.orWhereRaw('LOWER(surname) LIKE ?', [`%${surname.toLowerCase()}%`]);
             }
 
             if (typeof mother_name === 'string') {
-                query.andWhere('mother_name', 'like', `%${mother_name.toLowerCase()}%`);
+                query.orWhereRaw('LOWER(mother_name) LIKE ?', [`%${mother_name.toLowerCase()}%`]);
             }
 
             if (typeof date_of_birth === 'string') {
-                query.andWhereRaw('LOWER(date_of_birth) = ?', [date_of_birth.toLowerCase()]);
+                const formattedDate = moment(date_of_birth, "DD/MM/YYYY").format("YYYY-MM-DD");
+                query.andWhere('date_of_birth', formattedDate);
             }
 
-
-            if (Object.keys(query).length === 0) {
-                throw new AppError("Nenhum campo de busca informado.")
-            }
-            const offenders = await query.first()
-
-            if (!offenders || offenders.length === 0) {
-                throw new AppError("Nenhum infrator encontrado.")
+            const offenders = await query
+            if (offenders.length === 0) {
+                throw new AppError("Nenhum infrator encontrado.");
             }
 
             response.json(offenders);
         } catch (error) {
+            next(error);
+        }
+    }
+
+    async show(request: Request, response: Response, next: NextFunction) {
+        try {
+            const { offenderName } = request.params
+
+            const offender = await knex("offenders").where({ name: offenderName }).first()
+
+            response.json(offender)
+        } catch (error) {
             next(error)
         }
+
     }
 }

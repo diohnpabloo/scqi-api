@@ -10,3 +10,4 @@ const upload = multer(MULTER)
 
 offenderRoutes.post("/", upload.single("avatar"), offenderController.create)
 offenderRoutes.get("/", offenderController.find)
+offenderRoutes.get("/:offenderName", offenderController.show)
