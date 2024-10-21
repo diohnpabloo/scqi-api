@@ -1,4 +1,5 @@
-import { env } from "./src/env";
+import 'ts-node/register'
+import { env } from "./src/env/index";
 
 export default {
   client: env.DATABASE_CLIENT,
