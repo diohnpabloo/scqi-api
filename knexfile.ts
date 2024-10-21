@@ -1,4 +1,3 @@
-import 'ts-node/register'
 import { env } from "./src/env/index";
 
 export default {
