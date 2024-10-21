@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Api para gerenciar consulta de infratores em uma base de dados.",
   "main": "index.js",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node build/server.js",
     "dev": "tsx watch src/server.ts",

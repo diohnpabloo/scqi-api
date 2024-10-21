@@ -6,11 +6,13 @@ const envSchema = z.object({
     DATABASE_URL: z.string(),
     DATABASE_CLIENT: z.string(),
     PORT: z.coerce.number().default(3333),
+
     CLOUD_BUCKET_NAME: z.string(),
     CLOUD_ACCESS_KEY: z.string(),
     CLOUD_SECRET_ACESS_KEY: z.string(),
     CLOUD_BUCKET_REGION: z.string(),
     STORAGE_TYPE: z.string(),
+    
     ADMIN_USER_CREATED: z.string(),
     ADMIN_USER_REGISTER: z.string(),
     ADMIN_USER_NAME: z.string(),
