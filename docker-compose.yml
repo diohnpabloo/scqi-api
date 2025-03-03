@@ -3,8 +3,8 @@ services:
     image: bitnami/postgresql
     environment:
       - POSTGRESQL_USERNAME=scqiunix
-      - POSTGRESQL_PASSWORD=scqiunix
-      - POSTGRESQL_DATABASE=scqidatabase
+      - POSTGRESQL_PASSWORD=xVtkmz5mo8zGmh1xOptZlLTY3dT4Y2A5
+      - POSTGRESQL_DATABASE=scqidatabase_ibu5
     ports:
       - "5432:5432"
     volumes:
