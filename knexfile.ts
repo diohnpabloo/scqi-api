@@ -1,4 +1,4 @@
-import { env } from "./src/env";
+import { env } from "./src/env/index.js";
 
 export default {
   client: env.DATABASE_CLIENT,
