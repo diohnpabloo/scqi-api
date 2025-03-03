@@ -1,4 +1,4 @@
-import { env } from "./env/index";
+import { env } from "./env";
 
 export default {
   client: env.DATABASE_CLIENT,
