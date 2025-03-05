@@ -3,7 +3,7 @@ import express, { NextFunction, Request, Response } from 'express'
 import { routes } from './routes'
 import { errorHandling } from './middlewares/errorHandling'
 import { UPLOADS_FOLDER } from './configs/upload'
-import { schedulePaymentStatusUpdate } from "./service/SchedulePaymentStatusUpdated"
+import { schedulePaymentStatusUpdate } from "./service/schedulePaymentStatusUpdated"
 import { createAdminUser } from "./configs/createUserAdmin"
 import cors from "cors"
 
