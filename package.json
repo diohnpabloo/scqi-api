@@ -10,7 +10,7 @@
     "start": "node build/server.js",
     "dev": "tsx watch src/server.ts",
     "build": "tsup src --out-dir build",
-    "migrate": "npx knex migrate:latest",
+    "migrate": "npx knex migrate:latest --knexfile build/knexfile.js",
     "test": "vitest"
   },
   "keywords": [],
