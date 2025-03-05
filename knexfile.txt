@@ -1,6 +1,6 @@
-const { env } = require("./src/env/index");
+import { env } from "./src/env/index";
 
-module.exports = {
+export default {
   client: env.DATABASE_CLIENT,
   connection: {
     connectionString: env.DATABASE_URL,
