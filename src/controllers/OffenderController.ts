@@ -102,9 +102,16 @@ export class OffenderController {
 
     async show(request: Request, response: Response, next: NextFunction) {
         try {
-            const { offenderName } = request.params
+            let { offenderName } = request.params
+            offenderName = decodeURIComponent(offenderName).trim()
+            console.log("nome decodificado", offenderName)
 
-            const offender = await knex("offenders").where({ name: offenderName }).first()
+            const offender = await knex("offenders").whereILike({ name: offenderName }).first()
+            console.log("Resultado da busca", offender)
+
+            if(!offender) {
+                return response.status(404).json({message: "Infrator não encontrado"})
+            }
 
             response.json(offender)
         } catch (error) {
