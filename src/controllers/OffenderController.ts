@@ -104,10 +104,8 @@ export class OffenderController {
         try {
             let { offenderName } = request.params
             offenderName = decodeURIComponent(offenderName).trim()
-            console.log("nome decodificado", offenderName)
 
-            const offender = await knex("offenders").whereILike({ name: offenderName }).first()
-            console.log("Resultado da busca", offender)
+            const offender = await knex("offenders").whereILike( "name", offenderName ).first()
 
             if(!offender) {
                 return response.status(404).json({message: "Infrator não encontrado"})
